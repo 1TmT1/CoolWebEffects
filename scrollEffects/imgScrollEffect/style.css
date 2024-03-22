@@ -15,12 +15,19 @@ body {
     /* overflow-y: hidden; */
 }
 
+.container {
+    scroll-snap-type: y mandatory;
+}
+
 section {
     background-color: lightblue;
     text-align: center;
     padding: 5rem;
     transition: 100ms ease;
-    cursor: pointer;
+    /* cursor: pointer !important; */
+    height: 100vh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
 }
 
 section:hover {
@@ -42,12 +49,12 @@ section:last-of-type:hover {
 
 img {
     position: absolute;
-    right: 35px;
+    right: 25px;
     bottom: 0;
-    width: 8vw;
+    width: 20%;
     opacity: 0.8;
     z-index: 1;
-    cursor: pointer;
+    cursor: pointer !important;
     -webkit-user-drag: none;
     transition: 200ms ease;
 }

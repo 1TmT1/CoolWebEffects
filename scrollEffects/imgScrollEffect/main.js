@@ -16,11 +16,11 @@ const elScroll = document.documentElement;
 
 elScroll.addEventListener("wheel", (evt) => {
 
-  evt.preventDefault();
-  const delta = Math.sign(-evt.deltaY);
-  
-  scrollPage(delta);
-  
+    evt.preventDefault();
+    const delta = Math.sign(-evt.deltaY);
+
+    scrollPage(delta);
+
 }, { passive: false });
 
 
@@ -32,7 +32,7 @@ let drag;
 let startYPage;
 let moveY;
 
-let mousePostion = {
+let mousePosition = {
     x: 0,
     y: 0
 };
@@ -44,23 +44,15 @@ function update() {
     scrollImage.style.bottom = `${(startY + (moveY - startYPage) * -1)}px`;
 }
 
-scrollImage.addEventListener("mousedown", (e) => { 
+
+const scrollImageOnDown = (e) => {
     drag = scrollImage;
     startYPage = e.pageY;
     startY = parseInt(scrollImage.style.bottom.replace(/\D/g, "")) || 0;
     requestAnimationFrame(update);
-});
+};
 
-document.addEventListener("mouseup", (e) => {
-    drag = null;
-    startY = scrollImage.style.bottom;
-    document.body.style.cursor = "default";
-    // if (e.target !== document.body) {
-    //     e.target.style.cursor = "inherit";
-    // }
-});
-
-document.onmousemove = function(e) {
+const scrollImageOnMove = (e) => {
     if (drag) {
         document.body.style.cursor = "grabbing";
         if (e.target !== document.body) {
@@ -69,10 +61,36 @@ document.onmousemove = function(e) {
         moveY = e.pageY;
     }
 
-    mousePostion.x = e.pageY;
-    mousePostion.y = e.pageX;
-}
+    mousePosition.x = e.pageY;
+    mousePosition.y = e.pageX;
+};
 
+scrollImage.addEventListener("mousedown", scrollImageOnDown);
+scrollImage.addEventListener("touchstart", (e) => {
+    scrollImageOnDown(e); document.documentElement.style.overflow = 'hidden';
+    startYPage = e.changedTouches[0].pageY;
+});
+
+document.addEventListener("touchend", (e) => {
+    drag = null;
+    startY = scrollImage.style.bottom;
+    document.documentElement.style.overflow = 'auto';
+});
+
+document.addEventListener("mouseup", (e) => {
+    drag = null;
+    startY = scrollImage.style.bottom;
+    document.body.style.cursor = "auto";
+    // if (e.target !== document.body) {
+    //     e.target.style.cursor = "inherit";
+    // }
+});
+
+document.addEventListener("touchmove", (e) => {
+    scrollImageOnMove(e);
+    moveY = e.changedTouches[0].pageY;
+});
+document.addEventListener("mousemove", scrollImageOnMove);
 
 // Magnet Effect
 
@@ -84,37 +102,37 @@ const calculateDistance = (x1, y1, x2, y2) => {
     return Math.hypot(x2 - x1, y2 - y1);
 }
 
-class MagneticObject {
-    constructor(documentElement) {
-        this.documentElement = documentElement;
-        this.boundingClientReact = this.documentElement.getBoundingClientReact();
-        this.triggerArea = 100;
-        this.interpolationFactor = 0.8;
-        this.lerpingData = {
-            x: {
-                current: 0, 
-                target: 0
-            },
-            y: {
-                current: 0,
-                target: 0
-            }
-        };
+// class MagneticObject {
+//     constructor(documentElement) {
+//         this.documentElement = documentElement;
+//         this.boundingClientReact = this.documentElement.getBoundingClientReact();
+//         this.triggerArea = 100;
+//         this.interpolationFactor = 0.8;
+//         this.lerpingData = {
+//             x: {
+//                 current: 0, 
+//                 target: 0
+//             },
+//             y: {
+//                 current: 0,
+//                 target: 0
+//             }
+//         };
 
-        this.resize();
-        this.render();
-    }
+//         this.resize();
+//         this.render();
+//     }
 
-    resize() {
-        window.addEventListener("resize", (e) => {
-            this.boundingClientReact = this.documentElement.getBoundingClientReact();
-        });
-    }
+//     resize() {
+//         window.addEventListener("resize", (e) => {
+//             this.boundingClientReact = this.documentElement.getBoundingClientReact();
+//         });
+//     }
 
-    render() {
-        // const distanceMouseToCenter
-        window.requestAnimationFrame(() => this.render());
-    }
-}
+//     render() {
+//         // const distanceMouseToCenter
+//         window.requestAnimationFrame(() => this.render());
+//     }
+// }
 
-new MagneticObject(scrollImage);
+// new MagneticObject(scrollImage);
