@@ -11,8 +11,8 @@ window.addEventListener('resize', () => {
 });
 
 window.addEventListener('mousemove', (e) => {
-    mouse.x = e.x;
-    mouse.y = e.y;
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
 });
 
 let [minRadiusFactor, maxRadiusFactor] = [7, 10];
